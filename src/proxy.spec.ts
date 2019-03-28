@@ -9,19 +9,24 @@ import "jest-then"
 // if provided value !== primitive, return procy
 // if provided value = primitive, fetch target item
 
+
+function stub<T>( fallback: Partial<T> ): T
 function stub<T>( identifier: string ): T
+function stub<T>( fallback: string | Partial<T> ): T
 {
-	return new Proxy( function () {
+	// if ( typeof fallback === "string" )
+	// 	return {} as any as T
 	
-	}, {
+	return new Proxy( () => null, {
 		get( target, key, receiver ): any
 		{
-			console.log( "get:::", key)
+			if ( typeof fallback !== "string" && fallback.hasOwnProperty( key ) )
+				return (fallback as any)[ key ] // won't work for nested
 			
 			if ( key === "toString" )
-				return () => identifier.toString()
+				return () => fallback.toString()
 			
-			return stub( `${identifier}.${key.toString()}` )
+			return stub( `${fallback}.${key.toString()}` )
 		},
 		apply()
 		{
@@ -31,18 +36,18 @@ function stub<T>( identifier: string ): T
 }
 
 
-describe( `toString()`, () => {
-	interface randomObject
-	{
-		nested: {
-			nestedLevel2: {
-				property: string
-			}
-			property: number
+interface randomObject
+{
+	nested: {
+		nestedLevel2: {
+			property: string
 		}
 		property: number
 	}
-	
+	property: number
+}
+
+describe( `toString()`, () => {
 	test( `Returns name of object if provided`, () => {
 		const identifier = "identifier"
 		
@@ -56,7 +61,12 @@ describe( `toString()`, () => {
 		expect( _stub.nested.nestedLevel2.property.toString() ).toEqual( `${identifier}.nested.nestedLevel2.property` )
 	} )
 	
-	test( `Returns fallback value if available (and not object?)`, () => {
-	
+	xtest( `Returns fallback value if available (and not object?)`, () => {
+	} )
+} )
+
+describe( `Fallback value`, () => {
+	test( `Returns fallback value if provided`, () => {
+		expect( stub<randomObject>( { property: 5 } ).property ).toEqual( 5 )
 	} )
 } )
