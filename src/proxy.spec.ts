@@ -9,9 +9,25 @@ import "jest-then"
 // if provided value !== primitive, return procy
 // if provided value = primitive, fetch target item
 
-function stub( identifier: string )
+function stub<T>( identifier: string )
 {
-	return identifier
+	return new Proxy( function () {
+	
+	}, {
+		get( target, key, receiver ): any
+		{
+			console.log( "get:::", key, identifier.toString() )
+			
+			if ( key === "toString" )
+				return () => identifier.toString()
+			
+			return identifier
+		},
+		apply()
+		{
+		
+		},
+	} )
 }
 
 
