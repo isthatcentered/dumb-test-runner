@@ -9,10 +9,17 @@ import "jest-then"
 // if provided value !== primitive, return procy
 // if provided value = primitive, fetch target item
 
+function stub( identifier: string )
+{
+	return identifier
+}
+
 
 describe( `toString()`, () => {
 	test( `Returns name of object if provided`, () => {
-	
+		const identifier = "IDENTIFIER"
+		
+		expect( stub( identifier ).toString() ).toEqual( identifier )
 	} )
 	
 	test( `Returns nameOfObject.property when getting a sub property`, () => {
