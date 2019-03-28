@@ -1,38 +1,45 @@
 {
-  "name": "stubs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
-  "scripts": {
-    "test": "jest test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/isthatcentered/stubs.git"
-  },
-  "keywords": [
-    "stubs",
-    "testing",
-    "jest",
-    "mock",
-    "fake",
-    "proxy",
-    "proxies",
-    "typescript",
-    "tdd",
-    "bdd"
-  ],
-  "author": "Edouard Penin <e.peninb@gmail.com>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/isthatcentered/stubs/issues"
-  },
-  "homepage": "https://github.com/isthatcentered/stubs#readme",
-  "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "jest": "^24.5.0",
-    "microbundle": "^0.11.0",
-    "ts-jest": "^24.0.0",
-    "typescript": "^3.3.4000"
-  }
+    "name": "stubs",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "source": "src/index.ts",
+    "module": "dist/index.mjs",
+    "unpkg": "dist/index.umd.js",
+    "umd:main": "dist/main.umd.js",
+    "types": "dist/main.d.ts",
+    "scripts": {
+        "build": "microbundle",
+        "dev": "microbundle watch",
+        "test": "jest test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/isthatcentered/stubs.git"
+    },
+    "keywords": [
+        "stubs",
+        "testing",
+        "jest",
+        "mock",
+        "fake",
+        "proxy",
+        "proxies",
+        "typescript",
+        "tdd",
+        "bdd"
+    ],
+    "author": "Edouard Penin <e.peninb@gmail.com>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/isthatcentered/stubs/issues"
+    },
+    "homepage": "https://github.com/isthatcentered/stubs#readme",
+    "devDependencies": {
+        "@types/jest": "^24.0.11",
+        "jest": "^24.5.0",
+        "microbundle": "^0.11.0",
+        "ts-jest": "^24.0.0",
+        "typescript": "^3.3.4000"
+    }
 }
