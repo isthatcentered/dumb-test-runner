@@ -1,4 +1,5 @@
 import "jest-then"
+import { DeepPartial } from "utility-types"
 
 
 // can be identified
@@ -10,12 +11,10 @@ import "jest-then"
 // if provided value = primitive, fetch target item
 
 
-function stub<T>( fallback: Partial<T> ): T
+function stub<T>( fallback: DeepPartial<T> ): T
 function stub<T>( identifier: string ): T
-function stub<T>( fallback: string | Partial<T> ): T
+function stub<T>( fallback: string | DeepPartial<T> ): T
 {
-	// if ( typeof fallback === "string" )
-	// 	return {} as any as T
 	
 	return new Proxy( () => null, {
 		get( target, key, receiver ): any
@@ -68,5 +67,8 @@ describe( `toString()`, () => {
 describe( `Fallback value`, () => {
 	test( `Returns fallback value if provided`, () => {
 		expect( stub<randomObject>( { property: 5 } ).property ).toEqual( 5 )
+		
+		
+		// expect( stub<randomObject>( { nested: { property: 8 } } ).property ).toEqual( 8 )
 	} )
 } )
