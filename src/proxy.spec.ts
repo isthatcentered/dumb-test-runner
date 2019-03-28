@@ -15,6 +15,7 @@ function stub<T>( fallback: DeepPartial<T> ): T
 function stub<T>( identifier: string ): T
 function stub<T>( fallback: string | DeepPartial<T> ): T
 {
+	// if ( typeof fallback === "string" )
 	
 	return new Proxy( () => null, {
 		get( target, key, receiver ): any
@@ -35,6 +36,26 @@ function stub<T>( fallback: string | DeepPartial<T> ): T
 }
 
 
+function emptyStub<T>( identifier: string ): T
+{
+	
+	return new Proxy( () => null, {
+		get( target, key, receiver ): any
+		{
+			if ( key === "toString" )
+				return () => identifier.toString()
+			
+			return stub( `${identifier}.${key.toString()}` )
+		},
+		apply()
+		{
+		
+		},
+	} ) as any as T // @todo: fix that / can it be ?
+	
+}
+
+
 interface randomObject
 {
 	nested: {
@@ -46,19 +67,32 @@ interface randomObject
 	property: number
 }
 
-describe( `toString()`, () => {
+describe( `EmptyStub`, () => {
 	test( `Returns name of object if provided`, () => {
 		const identifier = "identifier"
 		
-		expect( stub<randomObject>( identifier ).toString() ).toEqual( identifier )
+		expect( emptyStub<randomObject>( identifier ).toString() ).toEqual( identifier )
 	} )
 	
 	test( `Returns nameOfObject.property when getting a sub property`, () => {
 		const identifier = "identifier",
-		      _stub      = stub<randomObject>( identifier )
+		      stub       = emptyStub<randomObject>( identifier )
 		
-		expect( _stub.nested.nestedLevel2.property.toString() ).toEqual( `${identifier}.nested.nestedLevel2.property` )
+		expect( stub.nested.nestedLevel2.property.toString() ).toEqual( `${identifier}.nested.nestedLevel2.property` )
 	} )
+	
+	xtest( `Can be called`, () => {
+	
+	} )
+	
+	
+	xtest( "Assigns a name to function when expecting instead of [Function undefined]", () => {
+		console.log( (() => null) )
+	} )
+} )
+
+/*
+describe( `toString()`, () => {
 	
 	xtest( `Returns fallback value if available (and not object?)`, () => {
 	} )
@@ -67,8 +101,11 @@ describe( `toString()`, () => {
 describe( `Fallback value`, () => {
 	test( `Returns fallback value if provided`, () => {
 		expect( stub<randomObject>( { property: 5 } ).property ).toEqual( 5 )
-		
-		
-		// expect( stub<randomObject>( { nested: { property: 8 } } ).property ).toEqual( 8 )
 	} )
+	
+	test( `Returns (nested) fallback value if provided`, () => {
+		expect( stub<randomObject>( { nested: { property: 8 } } ).property ).toEqual( 8 )
+	} )
+	
 } )
+*/
