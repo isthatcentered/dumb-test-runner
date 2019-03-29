@@ -1,5 +1,5 @@
 {
-    "name": "stubs",
+    "name": "dumb-test-runner",
     "version": "1.0.0",
     "description": "",
     "main": "dist/index.js",
@@ -12,7 +12,7 @@
         "build": "microbundle",
         "dev": "microbundle watch",
         "test": "jest test",
-        "start": "ts-node-dev --respawn src/framework.ts"
+        "start": "ts-node-dev --respawn src/index.ts"
     },
     "repository": {
         "type": "git",
