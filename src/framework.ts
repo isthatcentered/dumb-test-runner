@@ -1,23 +1,35 @@
-import { Expectation } from "./Expectation"
-import { Test } from "./Test"
+import { makeTestFunction, Reporter, Runner } from "./Runner"
+import { verify } from "./verify"
 
 
 
 
-const verify = <T>( result: T ) => {
-	return Expectation.for( result )
+console.clear()
+console.log( "[STARTING]\n" )
+
+
+
+const reporter: Reporter = {
+	onTestFailure( title: string, stack: string ): any
+	{
+	},
+	onTestSuccess( title: string ): void
+	{
+	},
 }
 
-const test = ( title: string, block: () => void ) =>
-	new Test( { title, block } )
+const runner = new Runner( reporter )
+
+const test = makeTestFunction( runner )
+
 
 
 test( "Logs a success", () => {
 	verify( 5 ).returns( 5 )
-} ).run()
+} )
 
 test( "Logs an error", () => {
 	verify( 5 ).returns( 4 )
-} ).run()
+} )
 
 // @todo: syntax 5.returns(2)

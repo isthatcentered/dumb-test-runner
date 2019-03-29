@@ -1,4 +1,5 @@
-import { Reporter, Runner, Test } from "./Runner"
+import { Reporter, Runner } from "./Runner"
+import { ITest } from "./Test"
 
 
 
@@ -53,7 +54,7 @@ function makeFakeReporter(): Reporter
 }
 
 
-function makeSuccessfulTest( title: string ): Test
+function makeSuccessfulTest( title: string ): ITest
 {
 	return {
 		title,
@@ -62,7 +63,7 @@ function makeSuccessfulTest( title: string ): Test
 }
 
 
-function makeFailedTest( title: string ): Test
+function makeFailedTest( title: string ): ITest
 {
 	return {
 		title,

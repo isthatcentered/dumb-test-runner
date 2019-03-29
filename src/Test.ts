@@ -1,19 +1,26 @@
-export class Test
+export interface ITest
 {
-	private readonly __block: () => void
-	private readonly __title: string
+	title: string
+	
+	run(): void
+}
+
+export class Test implements ITest
+{
+	public readonly block: () => void
+	public readonly title: string
 	
 	
 	constructor( { title, block }: { title: string, block: () => void } )
 	{
-		this.__block = block
-		this.__title = title
+		this.block = block
+		this.title = title
 		
 	}
 	
 	
 	run(): void
 	{
-		this.__block()
+		this.block()
 	}
 }

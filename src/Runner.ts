@@ -1,8 +1,13 @@
-export interface Test
+import { ITest, Test } from "./Test"
+
+
+
+
+export interface Reporter
 {
-	title: string
+	onTestFailure( title: string, stack: string ): any;
 	
-	run(): void
+	onTestSuccess( title: string ): void
 }
 
 export class Runner
@@ -16,10 +21,10 @@ export class Runner
 	}
 	
 	
-	private __tests: Test[] = []
+	private __tests: ITest[] = []
 	
 	
-	register( test: Test )
+	register( test: ITest )
 	{
 		this.__tests.push( test )
 	}
@@ -38,9 +43,9 @@ export class Runner
 	}
 }
 
-export interface Reporter
+
+export function makeTestFunction( runner: Runner ): ( title: string, block: () => void ) => void
 {
-	onTestFailure( title: string, stack: string ): any;
-	
-	onTestSuccess( title: string ): void
+	return ( title, block ) =>
+		runner.register( new Test( { title, block } ) )
 }
