@@ -3,24 +3,51 @@ import { Expectation } from "./Expectation"
 
 
 
+const randomObject    = { key: "value" },
+      differentObject = { not: "a-match" },
+      randomArray     = [ "A", 1 ],
+      differentArray  = [ "B", 2 ]
+
 describe( `Expectation`, () => {
+	
 	describe( `is()`, () => {
-		test( `Succcess`, () => {
-			let object = { key: "value" },
-			    array  = [ 1, "2" ]
-			
-			passes( exp( 5 ).is( 5 ) )
-			passes( exp( "word" ).is( "word" ) )
-			passes( exp( object ).is( object ) )
-			passes( exp( array ).is( array ) )
-		} )
-		
-		test( "Failing expectation throws", () => {
-			fails( () => exp( 5 ).is( 1 ) )
-			fails( () => exp( "word" ).is( "other word" ) )
-			fails( () => exp( { key: "value" } ).is( { key: "value" } ) )
-			fails( () => exp( [ 1, "2" ] ).is( [ 1, "2" ] ) )
-		} )
+		describe.each`
+	  Value            | Expected                  | Status
+	  ${5}              | ${5}                     | ${"passes"}
+	  ${5}              | ${3}                     | ${"fails"}
+	  
+	  ${"Word"}         | ${"Word"}                | ${"passes"}
+	  ${"Word"}         | ${"Other"}               | ${"fails"}
+	  
+	  ${randomObject}   | ${randomObject}          | ${"passes"}
+	  ${randomObject}   | ${{ ...randomObject }}   | ${"fails"}
+	  ${randomObject}   | ${differentObject}       | ${"fails"}
+	  
+	  ${randomArray}    | ${randomArray}           | ${"passes"}
+	  ${randomArray}    | ${[ ...randomArray ]}    | ${"fails"}
+	  ${randomArray}    | ${differentArray}        | ${"fails"}
+	`( "value.is(expected)", setupTestsFor( "is" ) )
+	} )
+	
+	
+	
+	describe( `returns()`, () => {
+		describe.each`
+	  Value            | Expected                  | Status
+	  ${5}              | ${5}                     | ${"passes"}
+	  ${5}              | ${3}                     | ${"fails"}
+	  
+	  ${"Word"}         | ${"Word"}                | ${"passes"}
+	  ${"Word"}         | ${"Other"}               | ${"fails"}
+	  
+	  ${randomObject}   | ${randomObject}          | ${"passes"}
+	  ${randomObject}   | ${{ ...randomObject }}   | ${"passes"}
+	  ${randomObject}   | ${differentObject}       | ${"fails"}
+	  
+	  ${randomArray}    | ${randomArray}           | ${"passes"}
+	  ${randomArray}    | ${[ ...randomArray ]}    | ${"passes"}
+	  ${randomArray}    | ${differentArray}        | ${"fails"}
+	`( "value.returns(expected)", setupTestsFor( "returns" ) )
 	} )
 	
 	describe( `throws()`, () => {
@@ -29,44 +56,16 @@ describe( `Expectation`, () => {
 				throw new Error()
 			}
 			
-			passes( exp( functionThatThrows ).throws() )
+			passes( Expectation.for( functionThatThrows ).throws() )
 		} )
 		
 		test( "Failing expectation throws", () => {
 			let functionThatDoesntThrow = () => null
 			
-			fails( () => exp( functionThatDoesntThrow ).throws() )
-		} )
-	} )
-	
-	describe( "returns()", () => {
-		test( "Success", () => {
-			let object = { key: "value" },
-			    array  = [ 1, "2" ]
-			
-			passes( exp( 5 ).returns( 5 ) )
-			passes( exp( "word" ).returns( "word" ) )
-			
-			passes( exp( { key: "value" } ).returns( { key: "value" } ) )
-			passes( exp( [ 1, "2" ] ).returns( [ 1, "2" ] ) )
-			
-			passes( exp( object ).returns( object ) )
-			passes( exp( array ).returns( array ) )
-		} )
-		
-		test( `Failing expectation throws`, () => {
-			fails( () => exp( { key: "value" } ).returns( { key: "other-value" } ) )
-			fails( () => exp( [ 1, "2" ] ).returns( [ "A", "B" ] ) )
+			fails( () => Expectation.for( functionThatDoesntThrow ).throws() )
 		} )
 	} )
 } )
-
-
-
-function exp<T>( value: T ): Expectation<T>
-{
-	return Expectation.for( value )
-}
 
 
 function passes( expectation: boolean )
@@ -81,3 +80,37 @@ function fails( expectation: Function )
 	expect( expectation ).toThrow()
 	
 }
+
+
+function setupTestsFor( keyword: keyof Expectation<any> )
+{
+	return ( { Value, Expected, Status }: { Value: any, Expected: any, Status: "passes" | "fails" } ) => {
+		
+		test( makeTestTitle( keyword, Value, Expected, Status ), () =>
+			runExpectationForStatus(
+				Status,
+				() => Expectation.for( Value )[ keyword ]( Expected ),
+			) )
+	}
+	
+	
+}
+
+
+function runExpectationForStatus( status: "passes" | "fails", expectation: () => boolean )
+{
+	return status === "passes" ?
+	       passes( expectation() ) :
+	       fails( () => expectation() )
+	
+	
+}
+
+
+function makeTestTitle( keyword: keyof Expectation<any>, value: string, expected: string, status: string )
+{
+	return `${value}.${keyword}(${expected}) ${status}`
+	
+	
+}
+
