@@ -1,31 +1,8 @@
 import { Expectation } from "./Expectation"
+import { Test } from "./Test"
 
 
 
-
-class Test
-{
-	private __config: { title: string; block: () => void }
-	
-	
-	constructor( config: { title: string, block: () => void } )
-	{
-		this.__config = config
-	}
-	
-	
-	run()
-	{
-		try {
-			this.__config.block()
-			console.log( " 👍 ", this.__config.title )
-			// ✓ ✗
-		} catch ( e ) {
-			console.log( " 💩 ", this.__config.title )
-			console.log( e )
-		}
-	}
-}
 
 const verify = <T>( result: T ) => {
 	return Expectation.for( result )
