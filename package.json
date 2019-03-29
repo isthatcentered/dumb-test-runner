@@ -38,7 +38,9 @@
     "homepage": "https://github.com/isthatcentered/stubs#readme",
     "devDependencies": {
         "@types/jest": "^24.0.11",
+        "@types/lodash.isequal": "^4.5.5",
         "jest": "^24.5.0",
+        "lodash.isequal": "^4.5.0",
         "microbundle": "^0.11.0",
         "ts-jest": "^24.0.0",
         "ts-node-dev": "^1.0.0-pre.32",
